@@ -1,5 +1,5 @@
 # Battaglia Navale
-Per la creazione del gioco Battaglia Navale in Phyton, bisogna prima capire come procedere.
+Per la creazione del gioco Battaglia Navale in Python, bisogna prima capire come procedere.
 
 Steps:
 
