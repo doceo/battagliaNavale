@@ -1,14 +1,18 @@
 import random
-
+import time
 
 class Campo:
     def __init__(self, n, navi):
         self.navi = navi
         self.matr = []
+        self.ematr = []
+        self.cnavi = []
         for i in range(n):
             self.matr.append([])
+            self.ematr.append([])
             for j in range(n):
                 self.matr[i].append('0')
+                self.ematr[i].append('0')
 
     def popola_rand(self):
         for nave in self.navi:
@@ -18,8 +22,8 @@ class Campo:
             z = ''
             while not allEmpty:
                 allEmpty = True
-                x = random.randint(0, 9)
-                y = random.randint(0, 9)
+                x = random.randint(0, len(self.matr) - 1)
+                y = random.randint(0, len(self.matr) - 1)
                 z = random.choice(["down", "right"])
                 if z == "down":
                     if self.can_go_down(x, y, nave):
@@ -39,59 +43,115 @@ class Campo:
                         allEmpty = False
             self.place(x, y, z, nave)
 
-    def popola_rand_down(self):
-        for nave in self.navi:
-            allEmpty = False
-            x = 0
-            y = 0
-            while not allEmpty:
-                allEmpty = True
-                x = random.randint(0, 9)
-                y = random.randint(0, 9)
-                if y <= len(self.matr) - nave:
-                    for i in range(nave):
-                        if self.matr[y + i][x] == 'X':
-                            allEmpty = False
-                else:
-                    allEmpty = False
-            for i in range(nave):
-                self.matr[y + i][x] = 'X'
-
     def printcampo(self):
         for i in range(len(self.matr)):
             s = ''
             for j in range(len(self.matr)):
                 s += ' ' + str(self.matr[i][j]) + ' '
             print(s)
-            
-            
+
     def can_go_down(self, x, y, nave):
-        allEmpty = True
-        if y <= len(self.matr) - nave:
+        if y + nave <= len(self.matr):
             for i in range(nave):
                 if self.matr[y + i][x] == 'X':
-                    allEmpty = False
+                    return False
         else:
-            allEmpty = False
-        return allEmpty
+            return False
+        return True
 
     def can_go_right(self, x, y, nave):
-        allEmpty = True
-        if x <= len(self.matr) - nave:
+        if x + nave <= len(self.matr):
             for i in range(nave):
                 if self.matr[y][x + i] == 'X':
-                    allEmpty = False
+                    return False
         else:
-            allEmpty = False
-        return allEmpty
-
+            return False
+        return True
 
     def place(self, x, y, z, nave):
+        coordinate = []
         if z == "down":
             for i in range(nave):
                 self.matr[y + i][x] = 'X'
+                coordinate.append((y + i, x))
         else:
             for i in range(nave):
                 self.matr[y][x + i] = 'X'
+                coordinate.append((y, x + i))
+        self.cnavi.append(coordinate)
 
 
+    def printecampo(self):
+        s = '   '
+        for i in range(len(self.ematr)):
+            s += ' ' + str(i) + ' '
+        print(s)
+        print('  ' + '-'*(len(s)-3))
+        for i in range(len(self.ematr)):
+            s = str(i) + ' |'
+            for j in range(len(self.ematr)):
+                s += ' ' + str(self.ematr[i][j]) + ' '
+            print(s)
+
+
+
+def checkhit(campo, y,x):
+    if campo.matr[y][x] == '0':  
+        return False 
+    return True 
+
+
+
+def playerturn(campi):
+    campi[0].printecampo()
+    yx = input("inserire yx:")
+    y= int(yx[0])
+    x = int(yx[1])
+    hit = checkhit(campi[1],y,x)
+    if hit:
+        distrutto = False
+        for nave in campi[1].cnavi:
+            if (y,x) in nave:
+                nave.remove((y,x))
+                if len(nave) ==0:
+                    distrutto = True
+                break
+        
+        if distrutto:
+            print("colpito ed affondato")
+        else:
+            print("colpito")
+            
+        campi[0].ematr[y][x] = 'x'
+    else:
+        print("acqua ...")
+        campi[0].ematr[y][x] = 'a'
+                               
+
+def botturn(campi):
+    campi[1].printecampo()
+    y= random.randint(0,len(campi[0].matr) - 1 )
+    x = random.randint(0,len(campi[0].matr) - 1 )
+    hit = checkhit(campi[0],y,x)
+    if hit:
+        print("colpito")
+        campi[1].ematr[y][x] = 'x'
+    else:
+        print("acqua ...")
+        campi[1].ematr[y][x] = 'a'
+                               
+
+
+def vs_bot(n, navi):
+    player = random.randint(0, 1) #0 player, 1 bot
+    campi = [Campo(n, navi), Campo(n, navi)]
+    campi[0].popola_rand()
+    campi[1].popola_rand()
+
+    while True:
+        print('turn of player', player)
+        if player == 0:
+            playerturn(campi)
+        else:
+            botturn(campi)
+        player = (player + 1) % 2
