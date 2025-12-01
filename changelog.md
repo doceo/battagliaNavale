@@ -1,14 +1,14 @@
-#Versione 0.1
+# Versione 0.1
 
-abbiamo creato il costruttore della classe
+- abbiamo creato il costruttore della classe
 
-griglie da 10*10
+- le griglie da 10*10
 
-lunghezza navi 
+- la lunghezza delle navi 
 
-numero navi
+- il numero delle navi
 
-verifica degli spazi vuoti o occupati da X
+- verifica degli spazi vuoti o occupati da X
 
 prossima modifica: aggiungere la variabile  orizzontale e verticale
 			             e riangolazione (verso alto, basso) oppure random (verso alto, basso)
