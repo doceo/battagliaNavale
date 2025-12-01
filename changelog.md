@@ -1,6 +1,7 @@
 # Versione 0.1
 
-- abbiamo creato il costruttore della classe
+abbiamo:
+- creato il costruttore della classe
 
 - le griglie da 10*10
 
